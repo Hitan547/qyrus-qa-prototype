@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Test Summary — Qyrus</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --blue-900: #0a1628;
+            --blue-800: #0d2045;
+            --blue-700: #0f3460;
+            --blue-600: #1a4a8a;
+            --blue-500: #1e60b8;
+            --blue-400: #3b82f6;
+            --blue-300: #60a5fa;
+            --blue-100: #dbeafe;
+            --blue-50: #eff6ff;
+            --white: #ffffff;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-300: #cbd5e1;
+            --slate-400: #94a3b8;
+            --slate-500: #64748b;
+            --slate-600: #475569;
+            --pass: #10b981;
+            --pass-bg: #d1fae5;
+            --fail: #ef4444;
+            --fail-bg: #fee2e2;
+            --skip: #f59e0b;
+            --skip-bg: #fef3c7;
+            --sidebar-w: 280px;
+            --header-h: 64px;
+            --radius: 12px;
+            --shadow: 0 4px 24px rgba(10, 22, 40, 0.10);
+            --shadow-lg: 0 8px 40px rgba(10, 22, 40, 0.18);
+            --transition: 0.22s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--slate-50);
+            color: var(--blue-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* ─── Header ─── */
+        header {
+            height: var(--header-h);
+            background: var(--blue-900);
+            display: flex;
+            align-items: center;
+            padding: 0 28px;
+            gap: 14px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .logo-mark {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--blue-400), var(--blue-300));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            color: #fff;
+            font-size: 13px;
+            letter-spacing: -1px;
+            flex-shrink: 0;
+        }
+
+        .logo-text {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+
+        .logo-text span {
+            color: var(--blue-300);
+        }
+
+        .logo-divider {
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            margin: 0 4px;
+        }
+
+        .logo-module {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--slate-400);
+            letter-spacing: 0.5px;
+        }
+
+        .header-pill {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--blue-300);
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--pass);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: .5;
+                transform: scale(1.4)
+            }
+        }
+
+        .header-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 10px;
+        }
+
+        .header-btn {
+            background: rgba(59, 130, 246, 0.18);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            color: var(--blue-300);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .header-btn:hover {
+            background: rgba(59, 130, 246, 0.32);
+        }
+
+        /* ─── Layout Shell ─── */
+        .shell {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            height: calc(100vh - var(--header-h));
+        }
+
+        /* ─── Sidebar ─── */
+        aside {
+            width: var(--sidebar-w);
+            background: var(--blue-800);
+            flex-shrink: 0;
+            overflow-y: auto;
+            padding: 24px 0;
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .sidebar-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+            color: var(--slate-400);
+            text-transform: uppercase;
+            padding: 0 20px 10px;
+        }
+
+        .suite-item {
+            padding: 14px 20px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: var(--transition);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            position: relative;
+        }
+
+        .suite-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .suite-item.active {
+            background: rgba(59, 130, 246, 0.12);
+            border-left-color: var(--blue-400);
+        }
+
+        .suite-checkbox {
+            width: 18px;
+            height: 18px;
+            border-radius: 5px;
+            border: 2px solid var(--slate-500);
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .suite-item.active .suite-checkbox {
+            background: var(--blue-400);
+            border-color: var(--blue-400);
+        }
+
+        .checkmark {
+            display: none;
+        }
+
+        .suite-item.active .checkmark {
+            display: block;
+        }
+
+        .suite-info {
+            flex: 1;
+        }
+
+        .suite-name {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .suite-item:not(.active) .suite-name {
+            color: var(--slate-300);
+        }
+
+        .suite-mini-bars {
+            display: flex;
+            gap: 3px;
+            height: 4px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .mini-bar-pass {
+            background: var(--pass);
+            border-radius: 2px;
+        }
+
+        .mini-bar-fail {
+            background: var(--fail);
+            border-radius: 2px;
+        }
+
+        .mini-bar-skip {
+            background: var(--skip);
+            border-radius: 2px;
+        }
+
+        .suite-count {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            color: var(--slate-400);
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.07);
+            margin: 16px 20px;
+        }
+
+        .select-all-btn {
+            margin: 0 20px;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            color: var(--blue-300);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 7px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .select-all-btn:hover {
+            background: rgba(59, 130, 246, 0.22);
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 16px 20px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .gen-report-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--blue-500), var(--blue-400));
+            border: none;
+            color: #fff;
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 11px 16px;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.2px;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
+        }
+
+        .gen-report-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(59, 130, 246, 0.45);
+        }
+
+        /* ─── Main Content ─── */
+        main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 28px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* ─── Page Title Row ─── */
+        .page-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .page-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--blue-900);
+            letter-spacing: -0.4px;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: var(--slate-500);
+            margin-top: 2px;
+        }
+
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            color: var(--slate-500);
+            font-weight: 500;
+        }
+
+        .filter-select {
+            background: var(--white);
+            border: 1.5px solid var(--slate-200);
+            color: var(--blue-900);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 7px 32px 7px 12px;
+            border-radius: 8px;
+            appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .filter-select:focus {
+            border-color: var(--blue-400);
+        }
+
+        /* ─── Go/No-Go Banner ─── */
+        .decision-banner {
+            border-radius: var(--radius);
+            padding: 16px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 2px solid transparent;
+            transition: all 0.5s cubic-bezier(.4, 0, .2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .decision-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0.07;
+            background-image: repeating-linear-gradient(45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%);
+            background-size: 10px 10px;
+        }
+
+        .decision-banner.go {
+            background: #f0fdf4;
+            border-color: #86efac;
+            color: #14532d;
+        }
+
+        .decision-banner.nogo {
+            background: #fff1f2;
+            border-color: #fca5a5;
+            color: #7f1d1d;
+        }
+
+        .decision-banner.neutral {
+            background: var(--slate-100);
+            border-color: var(--slate-200);
+            color: var(--slate-500);
+        }
+
+        .decision-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .decision-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .go .decision-icon {
+            background: #bbf7d0;
+        }
+
+        .nogo .decision-icon {
+            background: #fecaca;
+        }
+
+        .neutral .decision-icon {
+            background: var(--slate-200);
+        }
+
+        .decision-label {
+            font-family: 'Syne', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            margin-bottom: 2px;
+        }
+
+        .decision-sub {
+            font-size: 12px;
+            opacity: 0.75;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .decision-badge {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 5px 14px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .go .decision-badge {
+            background: #86efac;
+            color: #14532d;
+        }
+
+        .nogo .decision-badge {
+            background: #fca5a5;
+            color: #7f1d1d;
+        }
+
+        .neutral .decision-badge {
+            background: var(--slate-300);
+            color: var(--slate-600);
+        }
+
+        /* ─── Stats Grid ─── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.7fr 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            box-shadow: var(--shadow);
+            border: 1.5px solid var(--slate-100);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent, var(--blue-400));
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        .stat-card.pass-card {
+            --accent: var(--pass);
+        }
+
+        .stat-card.fail-card {
+            --accent: var(--fail);
+        }
+
+        .stat-card.skip-card {
+            --accent: var(--skip);
+        }
+
+        .stat-card.time-card {
+            --accent: var(--blue-300);
+        }
+
+        .stat-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--slate-400);
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--blue-900);
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .stat-card.pass-rate-card .stat-value {
+            font-size: 48px;
+            letter-spacing: -2px;
+            color: var(--pass);
+        }
+
+        .stat-sub {
+            font-size: 12px;
+            color: var(--slate-400);
+            margin-top: 6px;
+        }
+
+        .stat-icon {
+            position: absolute;
+            right: 18px;
+            top: 18px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .pass-rate-bar {
+            height: 5px;
+            background: var(--slate-100);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .pass-rate-fill {
+            height: 100%;
+            background: var(--pass);
+            border-radius: 3px;
+            transition: width 0.8s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        /* ─── Table Section ─── */
+        .table-section {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1.5px solid var(--slate-100);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--slate-100);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .table-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--blue-900);
+        }
+
+        .table-meta {
+            font-size: 12px;
+            color: var(--slate-400);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            padding: 10px 24px;
+            text-align: left;
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--slate-400);
+            font-weight: 500;
+            background: var(--slate-50);
+            border-bottom: 1px solid var(--slate-100);
+            white-space: nowrap;
+        }
+
+        thead th:not(:first-child) {
+            text-align: center;
+        }
+
+        tbody tr.suite-row {
+            border-bottom: 1px solid var(--slate-100);
+            cursor: pointer;
+            transition: background var(--transition);
+        }
+
+        tbody tr.suite-row:hover {
+            background: var(--blue-50);
+        }
+
+        tbody tr.suite-row.expanded {
+            background: var(--blue-50);
+        }
+
+        td {
+            padding: 14px 24px;
+            font-size: 13px;
+            color: var(--blue-900);
+        }
+
+        td:not(:first-child) {
+            text-align: center;
+        }
+
+        .td-suite-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .expand-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 5px;
+            background: var(--slate-100);
+            color: var(--slate-500);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        tr.expanded .expand-icon {
+            background: var(--blue-100);
+            color: var(--blue-500);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+        }
+
+        .badge.pass {
+            background: var(--pass-bg);
+            color: #047857;
+        }
+
+        .badge.fail {
+            background: var(--fail-bg);
+            color: #b91c1c;
+        }
+
+        .badge.partial {
+            background: var(--skip-bg);
+            color: #92400e;
+        }
+
+        .badge-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .pass-count {
+            color: var(--pass);
+            font-weight: 600;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .fail-count {
+            color: var(--fail);
+            font-weight: 600;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .skip-count {
+            color: var(--skip);
+            font-weight: 600;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .duration {
+            color: var(--slate-500);
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+        }
+
+        /* ─── Expanded Test Cases ─── */
+        tr.expanded-content {
+            display: none;
+        }
+
+        tr.expanded-content.open {
+            display: table-row;
+        }
+
+        .expanded-inner {
+            padding: 0 24px 16px 56px;
+            background: var(--blue-50);
+            border-bottom: 1px solid var(--blue-100);
+        }
+
+        .test-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 10px;
+            padding-top: 12px;
+        }
+
+        .test-case-chip {
+            background: var(--white);
+            border: 1.5px solid var(--slate-200);
+            border-radius: 9px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            transition: var(--transition);
+        }
+
+        .test-case-chip:hover {
+            border-color: var(--blue-300);
+            transform: translateY(-1px);
+        }
+
+        .tc-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            margin-top: 1px;
+        }
+
+        .tc-icon.pass {
+            background: var(--pass-bg);
+            color: var(--pass);
+        }
+
+        .tc-icon.fail {
+            background: var(--fail-bg);
+            color: var(--fail);
+        }
+
+        .tc-icon.skip {
+            background: var(--skip-bg);
+            color: var(--skip);
+        }
+
+        .tc-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tc-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--blue-900);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 3px;
+        }
+
+        .tc-meta {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            color: var(--slate-400);
+        }
+
+        .mini-progress {
+            height: 3px;
+            background: var(--slate-100);
+            border-radius: 2px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+
+        .mini-progress-fill {
+            height: 100%;
+            border-radius: 2px;
+        }
+
+        /* ─── Modal ─── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 22, 40, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 640px;
+            max-height: 88vh;
+            overflow-y: auto;
+            animation: slideUp .28s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(32px) scale(.97);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 24px 28px 20px;
+            border-bottom: 1px solid var(--slate-100);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            background: var(--white);
+            z-index: 10;
+        }
+
+        .modal-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--blue-900);
+            letter-spacing: -0.3px;
+        }
+
+        .modal-close {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: var(--slate-100);
+            border: none;
+            color: var(--slate-500);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: var(--slate-200);
+            color: var(--blue-900);
+        }
+
+        .modal-body {
+            padding: 24px 28px;
+        }
+
+        /* Modal Go/NoGo */
+        .modal-decision {
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .modal-decision.go {
+            background: #f0fdf4;
+            color: #14532d;
+            border: 1.5px solid #86efac;
+        }
+
+        .modal-decision.nogo {
+            background: #fff1f2;
+            color: #7f1d1d;
+            border: 1.5px solid #fca5a5;
+        }
+
+        .modal-decision-icon {
+            font-size: 20px;
+        }
+
+        .modal-summary-banner {
+            background: linear-gradient(135deg, var(--blue-900), var(--blue-700));
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .modal-pass-rate {
+            font-family: 'Syne', sans-serif;
+            font-size: 40px;
+            font-weight: 800;
+            color: var(--pass);
+            letter-spacing: -2px;
+        }
+
+        .modal-pass-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .6);
+            font-family: 'DM Mono', monospace;
+            letter-spacing: 1px;
+        }
+
+        .modal-stats-row {
+            display: flex;
+            gap: 24px;
+        }
+
+        .modal-stat {
+            text-align: center;
+        }
+
+        .modal-stat-val {
+            font-family: 'DM Mono', monospace;
+            font-size: 18px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .modal-stat-lbl {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .5);
+            margin-top: 2px;
+            letter-spacing: 0.8px;
+        }
+
+        .report-section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--blue-900);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .report-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--slate-200);
+        }
+
+        .report-suite-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 9px;
+            border: 1.5px solid var(--slate-100);
+            margin-bottom: 8px;
+            transition: var(--transition);
+        }
+
+        .report-suite-row:hover {
+            border-color: var(--blue-200);
+            background: var(--blue-50);
+        }
+
+        .report-suite-name {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .report-suite-counts {
+            display: flex;
+            gap: 12px;
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+        }
+
+        .modal-footer {
+            padding: 16px 28px 24px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-secondary {
+            background: var(--slate-100);
+            border: none;
+            color: var(--slate-600);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 9px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-secondary:hover {
+            background: var(--slate-200);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--blue-500), var(--blue-400));
+            border: none;
+            color: #fff;
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 9px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(59, 130, 246, .35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, .45);
+        }
+
+        /* ─── Toast ─── */
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: var(--blue-900);
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all .3s cubic-bezier(.4, 0, .2, 1);
+            z-index: 2000;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            font-size: 16px;
+        }
+
+        /* ─── Empty State ─── */
+        .empty-state {
+            padding: 60px 24px;
+            text-align: center;
+            color: var(--slate-400);
+        }
+
+        .empty-state-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state-text {
+            font-size: 14px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--slate-200);
+            border-radius: 4px;
+        }
+
+        aside::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, .12);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-mark">QY</div>
+        <div class="logo-text">Qy<span>rus</span></div>
+        <div class="logo-divider"></div>
+        <div class="logo-module">QA Summary Report</div>
+        <div class="header-pill">
+            <div class="pulse-dot"></div>
+            Live Session
+        </div>
+        <div class="header-meta">
+            <div class="header-btn" id="refreshBtn">↻ Refresh</div>
+        </div>
+    </header>
+
+    <div class="shell">
+
+        <aside>
+            <div class="sidebar-label">Test Suites</div>
+            <div id="suiteList"></div>
+            <div class="sidebar-divider"></div>
+            <button class="select-all-btn" id="selectAllBtn">Select All</button>
+            <div class="sidebar-footer">
+                <button class="gen-report-btn" id="openModalBtn">⬇ Generate Report</button>
+            </div>
+        </aside>
+
+        <main>
+
+            <div class="page-title-row">
+                <div>
+                    <div class="page-title">QA Test Summary Report</div>
+                    <div class="page-subtitle" id="subtitleDate">Loading…</div>
+                </div>
+                <div class="filter-row">
+                    <span class="filter-label">View</span>
+                    <select class="filter-select" id="filterSelect">
+                        <option value="all">All Tests</option>
+                        <option value="failed">Failed Only</option>
+                        <option value="passed">Passed Only</option>
+                        <option value="skipped">Skipped Only</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- ── Go / No-Go Decision Banner ── -->
+            <div class="decision-banner neutral" id="decisionBanner">
+                <div class="decision-left">
+                    <div class="decision-icon" id="decisionIcon">📋</div>
+                    <div>
+                        <div class="decision-label" id="decisionLabel">Awaiting Data</div>
+                        <div class="decision-sub" id="decisionSub">Select test suites to generate a release decision
+                        </div>
+                    </div>
+                </div>
+                <div class="decision-badge" id="decisionBadge">NO SUITES SELECTED</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:#eff6ff">🧪</div>
+                    <div class="stat-label">Total Tests</div>
+                    <div class="stat-value" id="statTotal">0</div>
+                    <div class="stat-sub" id="statSuites">0 suites selected</div>
+                </div>
+                <div class="stat-card pass-rate-card">
+                    <div class="stat-label">Pass Rate</div>
+                    <div class="stat-value" id="statPassRate">—</div>
+                    <div class="pass-rate-bar">
+                        <div class="pass-rate-fill" id="passRateBar" style="width:0%"></div>
+                    </div>
+                    <div class="stat-sub" id="statPassSub">Select suites to calculate</div>
+                </div>
+                <div class="stat-card pass-card">
+                    <div class="stat-icon" style="background:#d1fae5">✓</div>
+                    <div class="stat-label">Passed</div>
+                    <div class="stat-value" id="statPass">0</div>
+                    <div class="stat-sub">tests passed</div>
+                </div>
+                <div class="stat-card fail-card">
+                    <div class="stat-icon" style="background:#fee2e2">✗</div>
+                    <div class="stat-label">Failed</div>
+                    <div class="stat-value" id="statFail">0</div>
+                    <div class="stat-sub">tests failed</div>
+                </div>
+                <div class="stat-card skip-card">
+                    <div class="stat-icon" style="background:#fef3c7">⏭</div>
+                    <div class="stat-label">Skipped</div>
+                    <div class="stat-value" id="statSkip">0</div>
+                    <div class="stat-sub">tests skipped</div>
+                </div>
+            </div>
+
+            <div class="table-section">
+                <div class="table-header">
+                    <div>
+                        <div class="table-title">Suite Breakdown</div>
+                        <div class="table-meta" id="tableMetaText">Click a row to expand test cases</div>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:34%">Suite Name</th>
+                            <th>Passed</th>
+                            <th>Failed</th>
+                            <th>Skipped</th>
+                            <th>Status</th>
+                            <th>Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+                <div id="emptyState" class="empty-state" style="display:none">
+                    <div class="empty-state-icon">📭</div>
+                    <div class="empty-state-text">No suites selected. Check a suite from the sidebar to begin.</div>
+                </div>
+                <div id="filterEmpty" class="empty-state" style="display:none">
+                    <div class="empty-state-icon">🔍</div>
+                    <div class="empty-state-text">No tests match the current filter.</div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">📄 QA Release Report</div>
+                <button class="modal-close" id="closeModal">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="closeModal2">Close</button>
+                <button class="btn-primary" id="downloadBtn">⬇ Export Summary</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <span class="toast-icon">✓</span>
+        <span id="toastMsg">Report exported!</span>
+    </div>
+
+    <script>
+        const SUITES = [
+            {
+                id: 'login', name: 'Login Flow',
+                total: 42, pass: 38, fail: 3, skip: 1,
+                duration: '4m 12s', durationSec: 252,
+                tests: [
+                    { name: 'Valid credentials login', status: 'pass', duration: '0.4s' },
+                    { name: 'Invalid password rejection', status: 'fail', duration: '1.2s' },
+                    { name: 'Forgot password flow', status: 'pass', duration: '0.8s' },
+                    { name: 'Session token expiry', status: 'skip', duration: '—' },
+                ]
+            },
+            {
+                id: 'checkout', name: 'Checkout API',
+                total: 28, pass: 22, fail: 5, skip: 1,
+                duration: '2m 55s', durationSec: 175,
+                tests: [
+                    { name: 'POST /checkout/init', status: 'pass', duration: '0.3s' },
+                    { name: 'Cart total calculation', status: 'fail', duration: '0.9s' },
+                    { name: 'Promo code validation', status: 'fail', duration: '1.1s' },
+                    { name: 'Payment gateway ping', status: 'pass', duration: '0.5s' },
+                ]
+            },
+            {
+                id: 'mobile', name: 'Mobile Regression',
+                total: 65, pass: 58, fail: 4, skip: 3,
+                duration: '9m 08s', durationSec: 548,
+                tests: [
+                    { name: 'iOS splash screen render', status: 'pass', duration: '1.2s' },
+                    { name: 'Android back navigation', status: 'pass', duration: '0.6s' },
+                    { name: 'Push notification tap', status: 'fail', duration: '2.1s' },
+                    { name: 'Dark mode color tokens', status: 'skip', duration: '—' },
+                ]
+            },
+            {
+                id: 'data', name: 'Data Validation',
+                total: 19, pass: 15, fail: 2, skip: 2,
+                duration: '1m 33s', durationSec: 93,
+                tests: [
+                    { name: 'Email format regex', status: 'pass', duration: '0.1s' },
+                    { name: 'Phone number normaliser', status: 'fail', duration: '0.4s' },
+                    { name: 'Date range boundary check', status: 'pass', duration: '0.2s' },
+                    { name: 'Null field handling', status: 'skip', duration: '—' },
+                ]
+            },
+        ];
+
+        let selected = new Set(['login', 'checkout', 'mobile', 'data']);
+        let expanded = new Set();
+        let filter = 'all';
+
+        const $ = id => document.getElementById(id);
+        const fmt = n => String(n).padStart(2, '0');
+
+        function getSelectedSuites() { return SUITES.filter(s => selected.has(s.id)); }
+
+        function suiteStatus(s) {
+            if (s.fail === 0 && s.skip === 0) return 'pass';
+            if (s.fail > 0 && s.fail / s.total > 0.1) return 'fail';
+            return 'partial';
+        }
+
+        function statusBadge(st) {
+            const map = { pass: { cls: 'pass', label: 'Passed' }, fail: { cls: 'fail', label: 'Failed' }, partial: { cls: 'partial', label: 'Partial' } };
+            const m = map[st];
+            return `<span class="badge ${m.cls}"><span class="badge-dot"></span>${m.label}</span>`;
+        }
+
+        function tcIcon(st) {
+            const icons = { pass: '✓', fail: '✗', skip: '⏭' };
+            return `<div class="tc-icon ${st}">${icons[st]}</div>`;
+        }
+
+        function totalExecTime(suites) {
+            const secs = suites.reduce((a, s) => a + s.durationSec, 0);
+            const m = Math.floor(secs / 60), s = secs % 60;
+            return `${m}m ${fmt(s)}s`;
+        }
+
+        function filterTests(suite) {
+            if (filter === 'all') return suite.tests;
+            return suite.tests.filter(t => {
+                if (filter === 'failed') return t.status === 'fail';
+                if (filter === 'passed') return t.status === 'pass';
+                if (filter === 'skipped') return t.status === 'skip';
+                return true;
+            });
+        }
+
+        function shouldSuiteAppear(suite) {
+            if (filter === 'all') return true;
+            const statusMap = { failed: 'fail', passed: 'pass', skipped: 'skip' };
+            const st = statusMap[filter];
+            if (!st) return true;
+            return suite.tests.some(t => t.status === st);
+        }
+
+        // ── Go/No-Go Banner ──────────────────────────────────────────────────────────
+        function renderDecisionBanner(suites, total, fail, rate) {
+            const banner = $('decisionBanner');
+            const icon = $('decisionIcon');
+            const label = $('decisionLabel');
+            const sub = $('decisionSub');
+            const badge = $('decisionBadge');
+
+            if (suites.length === 0) {
+                banner.className = 'decision-banner neutral';
+                icon.textContent = '📋';
+                label.textContent = 'Awaiting Data';
+                sub.textContent = 'Select test suites to generate a release decision';
+                badge.textContent = 'NO SUITES SELECTED';
+                return;
+            }
+
+            if (rate >= 90 && fail === 0) {
+                banner.className = 'decision-banner go';
+                icon.textContent = '✅';
+                label.textContent = 'GO — Ready for Release';
+                sub.textContent = `All ${total} tests passed · No blockers detected across ${suites.length} suite${suites.length > 1 ? 's' : ''}`;
+                badge.textContent = '✓ RELEASE APPROVED';
+            } else if (rate >= 90) {
+                banner.className = 'decision-banner go';
+                icon.textContent = '✅';
+                label.textContent = 'GO — Ready for Release';
+                sub.textContent = `${rate}% pass rate meets threshold · ${fail} non-blocking failure${fail > 1 ? 's' : ''} — review before merge`;
+                badge.textContent = '✓ RELEASE APPROVED';
+            } else {
+                banner.className = 'decision-banner nogo';
+                icon.textContent = '🚫';
+                label.textContent = `NO-GO — ${fail} Failure${fail > 1 ? 's' : ''} Blocking Release`;
+                sub.textContent = `${rate}% pass rate is below the 90% threshold · Resolve failures before deploying to production`;
+                badge.textContent = '✗ HOLD RELEASE';
+            }
+        }
+
+        // ── Sidebar ──────────────────────────────────────────────────────────────────
+        function renderSidebar() {
+            $('suiteList').innerHTML = SUITES.map(s => {
+                const isActive = selected.has(s.id);
+                const passW = Math.round((s.pass / s.total) * 100);
+                const failW = Math.round((s.fail / s.total) * 100);
+                const skipW = 100 - passW - failW;
+                return `
+      <div class="suite-item ${isActive ? 'active' : ''}" data-id="${s.id}" onclick="toggleSuite('${s.id}')">
+        <div class="suite-checkbox">
+          <svg class="checkmark" width="10" height="8" viewBox="0 0 10 8" fill="none">
+            <path d="M1 4l3 3 5-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="suite-info">
+          <div class="suite-name">${s.name}</div>
+          <div class="suite-mini-bars">
+            <div class="mini-bar-pass" style="flex:${passW}"></div>
+            <div class="mini-bar-fail" style="flex:${failW}"></div>
+            <div class="mini-bar-skip" style="flex:${Math.max(skipW, 0)}"></div>
+          </div>
+          <div class="suite-count">${s.total} tests · ${s.pass}P ${s.fail}F ${s.skip}S</div>
+        </div>
+      </div>`;
+            }).join('');
+        }
+
+        // ── Stats ────────────────────────────────────────────────────────────────────
+        function renderStats() {
+            const suites = getSelectedSuites();
+            const total = suites.reduce((a, s) => a + s.total, 0);
+            const pass = suites.reduce((a, s) => a + s.pass, 0);
+            const fail = suites.reduce((a, s) => a + s.fail, 0);
+            const skip = suites.reduce((a, s) => a + s.skip, 0);
+            const rate = total ? Math.round((pass / total) * 100) : 0;
+
+            animateCount('statTotal', total);
+            animateCount('statPass', pass);
+            animateCount('statFail', fail);
+            animateCount('statSkip', skip);
+
+            $('statPassRate').textContent = total ? `${rate}%` : '—';
+            $('passRateBar').style.width = `${rate}%`;
+            $('statPassSub').textContent = total ? `${pass} of ${total} tests passed` : 'Select suites to calculate';
+            $('statSuites').textContent = `${suites.length} suite${suites.length !== 1 ? 's' : ''} selected`;
+
+            renderDecisionBanner(suites, total, fail, rate);
+        }
+
+        function animateCount(id, target) {
+            const el = $(id);
+            const start = parseInt(el.textContent) || 0;
+            const dur = 400, fps = 60;
+            const steps = Math.ceil((dur / 1000) * fps);
+            let i = 0;
+            const timer = setInterval(() => {
+                i++;
+                el.textContent = Math.round(start + (target - start) * (i / steps));
+                if (i >= steps) { el.textContent = target; clearInterval(timer); }
+            }, 1000 / fps);
+        }
+
+        // ── Table ────────────────────────────────────────────────────────────────────
+        function renderTable() {
+            const body = $('tableBody');
+            const allSuites = getSelectedSuites();
+            const suites = allSuites.filter(shouldSuiteAppear);
+            const empty = $('emptyState'), filterEmpty = $('filterEmpty');
+
+            body.innerHTML = '';
+            empty.style.display = allSuites.length === 0 ? 'block' : 'none';
+            filterEmpty.style.display = allSuites.length > 0 && suites.length === 0 ? 'block' : 'none';
+
+            suites.forEach(s => {
+                const st = suiteStatus(s);
+                const passW = Math.round((s.pass / s.total) * 100);
+                const isExp = expanded.has(s.id);
+                const tests = filterTests(s);
+
+                const tr = document.createElement('tr');
+                tr.className = `suite-row ${isExp ? 'expanded' : ''}`;
+                tr.setAttribute('data-id', s.id);
+                tr.innerHTML = `
+      <td>
+        <div class="td-suite-name">
+          <div class="expand-icon">${isExp ? '▾' : '▸'}</div>
+          ${s.name}
+        </div>
+        <div class="mini-progress" style="max-width:160px;margin-top:6px;">
+          <div class="mini-progress-fill" style="width:${passW}%;background:${s.fail > 3 ? 'var(--fail)' : 'var(--pass)'}"></div>
+        </div>
+      </td>
+      <td><span class="pass-count">${s.pass}</span></td>
+      <td><span class="fail-count">${s.fail}</span></td>
+      <td><span class="skip-count">${s.skip}</span></td>
+      <td>${statusBadge(st)}</td>
+      <td><span class="duration">${s.duration}</span></td>`;
+                tr.addEventListener('click', () => toggleExpand(s.id));
+                body.appendChild(tr);
+
+                const expTr = document.createElement('tr');
+                expTr.className = `expanded-content ${isExp ? 'open' : ''}`;
+                expTr.innerHTML = `
+      <td colspan="6">
+        <div class="expanded-inner">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--slate-400);text-transform:uppercase;margin-bottom:4px;">
+            Test Cases${filter !== 'all' ? ` — ${filter} filter` : ''}
+          </div>
+          <div class="test-cases-grid">
+            ${tests.length > 0 ? tests.map(t => `
+              <div class="test-case-chip">
+                ${tcIcon(t.status)}
+                <div class="tc-body">
+                  <div class="tc-name" title="${t.name}">${t.name}</div>
+                  <div class="tc-meta">${t.duration}</div>
+                </div>
+              </div>`).join('') : `<div style="font-size:12px;color:var(--slate-400);padding:4px 0;">No tests match this filter.</div>`}
+          </div>
+        </div>
+      </td>`;
+                body.appendChild(expTr);
+            });
+
+            $('tableMetaText').textContent = suites.length > 0
+                ? `${suites.length} suite${suites.length !== 1 ? 's' : ''} shown · click row to expand`
+                : 'Select suites from the sidebar';
+        }
+
+        // ── Actions ───────────────────────────────────────────────────────────────────
+        function toggleSuite(id) {
+            if (selected.has(id)) { selected.delete(id); expanded.delete(id); }
+            else selected.add(id);
+            renderSidebar(); renderStats(); renderTable();
+        }
+
+        function toggleExpand(id) {
+            if (expanded.has(id)) expanded.delete(id); else expanded.add(id);
+            renderTable();
+        }
+
+        $('selectAllBtn').addEventListener('click', () => {
+            if (selected.size === SUITES.length) { selected.clear(); expanded.clear(); }
+            else SUITES.forEach(s => selected.add(s.id));
+            $('selectAllBtn').textContent = selected.size === SUITES.length ? 'Deselect All' : 'Select All';
+            renderSidebar(); renderStats(); renderTable();
+        });
+
+        $('filterSelect').addEventListener('change', e => { filter = e.target.value; renderTable(); });
+
+        $('refreshBtn').addEventListener('click', () => {
+            $('refreshBtn').textContent = '↻ Refreshing…';
+            setTimeout(() => { $('refreshBtn').textContent = '↻ Refresh'; renderStats(); renderTable(); }, 900);
+        });
+
+        // ── Modal ─────────────────────────────────────────────────────────────────────
+        function buildModalContent() {
+            const suites = getSelectedSuites();
+            const total = suites.reduce((a, s) => a + s.total, 0);
+            const pass = suites.reduce((a, s) => a + s.pass, 0);
+            const fail = suites.reduce((a, s) => a + s.fail, 0);
+            const skip = suites.reduce((a, s) => a + s.skip, 0);
+            const rate = total ? Math.round((pass / total) * 100) : 0;
+            const execT = totalExecTime(suites);
+            const now = new Date();
+
+            if (suites.length === 0) {
+                return `<div style="text-align:center;padding:40px 0;color:var(--slate-400)">
+      <div style="font-size:36px;margin-bottom:12px">📭</div>
+      <div>No suites selected. Please select at least one suite.</div>
+    </div>`;
+            }
+
+            const isGo = rate >= 90;
+            const decisionHTML = isGo
+                ? `<div class="modal-decision go"><span class="modal-decision-icon">✅</span> GO — Ready for Production Release · ${rate}% pass rate meets threshold</div>`
+                : `<div class="modal-decision nogo"><span class="modal-decision-icon">🚫</span> NO-GO — ${fail} failure${fail > 1 ? 's' : ''} blocking release · Pass rate ${rate}% below 90% threshold</div>`;
+
+            return `
+    ${decisionHTML}
+    <div class="modal-summary-banner">
+      <div>
+        <div class="modal-pass-label">PASS RATE</div>
+        <div class="modal-pass-rate">${rate}%</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">
+          Generated ${now.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}
+        </div>
+      </div>
+      <div class="modal-stats-row">
+        <div class="modal-stat"><div class="modal-stat-val">${total}</div><div class="modal-stat-lbl">TOTAL</div></div>
+        <div class="modal-stat"><div class="modal-stat-val" style="color:var(--pass)">${pass}</div><div class="modal-stat-lbl">PASSED</div></div>
+        <div class="modal-stat"><div class="modal-stat-val" style="color:var(--fail)">${fail}</div><div class="modal-stat-lbl">FAILED</div></div>
+        <div class="modal-stat"><div class="modal-stat-val" style="color:var(--skip)">${skip}</div><div class="modal-stat-lbl">SKIPPED</div></div>
+        <div class="modal-stat"><div class="modal-stat-val" style="color:var(--blue-300)">${execT}</div><div class="modal-stat-lbl">EXEC TIME</div></div>
+      </div>
+    </div>
+
+    <div class="report-section-title">Suite Results</div>
+    ${suites.map(s => {
+                const st = suiteStatus(s);
+                const stLabels = { pass: '✓ Passed', fail: '✗ Failed', partial: '⚠ Partial' };
+                return `<div class="report-suite-row">
+        <div class="report-suite-name">${s.name}</div>
+        <div class="report-suite-counts">
+          <span style="color:var(--pass)">✓ ${s.pass}</span>
+          <span style="color:var(--fail)">✗ ${s.fail}</span>
+          <span style="color:var(--skip)">⏭ ${s.skip}</span>
+        </div>
+        <span class="badge ${st === 'partial' ? 'partial' : st}"><span class="badge-dot"></span>${stLabels[st]}</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--slate-400)">${s.duration}</span>
+      </div>`;
+            }).join('')}
+
+    <div style="margin-top:20px"></div>
+    <div class="report-section-title">Release Recommendation</div>
+    <div style="background:var(--slate-50);border-radius:10px;padding:16px;font-size:13px;color:var(--slate-600);line-height:1.7;border:1.5px solid var(--slate-100)">
+      ${fail === 0
+                    ? `<strong style="color:var(--pass)">✓ All suites passed.</strong> No failures detected. System is stable — cleared for production deployment.`
+                    : `<strong style="color:var(--fail)">⚠ ${fail} test${fail > 1 ? 's' : ''} failed</strong> across ${suites.filter(s => s.fail > 0).length} suite${suites.filter(s => s.fail > 0).length > 1 ? 's' : ''}. Review and resolve before production. Pass rate is <strong>${rate}%</strong> — ${rate >= 90 ? 'meets' : 'below'} the 90% release threshold.`}
+      ${skip > 0 ? `<br>${skip} test${skip > 1 ? 's were' : ' was'} skipped — manual verification recommended.` : ''}
+    </div>`;
+        }
+
+        $('openModalBtn').addEventListener('click', openModal);
+        function openModal() { $('modalBody').innerHTML = buildModalContent(); $('modalOverlay').classList.add('open'); }
+        function closeModal() { $('modalOverlay').classList.remove('open'); }
+        $('closeModal').addEventListener('click', closeModal);
+        $('closeModal2').addEventListener('click', closeModal);
+        $('modalOverlay').addEventListener('click', e => { if (e.target === $('modalOverlay')) closeModal(); });
+
+        // ── Export ────────────────────────────────────────────────────────────────────
+        $('downloadBtn').addEventListener('click', () => {
+            const suites = getSelectedSuites();
+            const total = suites.reduce((a, s) => a + s.total, 0);
+            const pass = suites.reduce((a, s) => a + s.pass, 0);
+            const fail = suites.reduce((a, s) => a + s.fail, 0);
+            const skip = suites.reduce((a, s) => a + s.skip, 0);
+            const rate = total ? Math.round((pass / total) * 100) : 0;
+            const now = new Date();
+            const isGo = rate >= 90;
+
+            const content = [
+                'Qyrus · QA Test Summary Report',
+                '================================',
+                `Generated  : ${now.toLocaleString()}`,
+                `Decision   : ${isGo ? '✓ GO — Ready for Release' : '✗ NO-GO — Failures Blocking Release'}`,
+                '',
+                'AGGREGATE STATS',
+                `Total Tests : ${total}`,
+                `Pass Rate   : ${rate}%  ${isGo ? '(meets ≥90% threshold)' : '(below ≥90% threshold)'}`,
+                `Passed      : ${pass}`,
+                `Failed      : ${fail}`,
+                `Skipped     : ${skip}`,
+                `Exec Time   : ${totalExecTime(suites)}`,
+                '',
+                'SUITE BREAKDOWN',
+                ...suites.map(s =>
+                    `${s.name.padEnd(22)} | Pass: ${s.pass} | Fail: ${s.fail} | Skip: ${s.skip} | ${s.duration}`
+                ),
+                '',
+                'TEST CASES',
+                ...suites.flatMap(s => [
+                    `\n[${s.name}]`,
+                    ...s.tests.map(t => `  ${t.status.toUpperCase().padEnd(5)} ${t.name} (${t.duration})`)
+                ]),
+            ].join('\n');
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `qyrus-qa-report-${now.toISOString().slice(0, 10)}.txt`;
+            a.click();
+            closeModal();
+            showToast('Summary exported successfully!');
+        });
+
+        function showToast(msg) {
+            $('toastMsg').textContent = msg;
+            const t = $('toast');
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3200);
+        }
+
+        (function init() {
+            const now = new Date();
+            $('subtitleDate').textContent =
+                `Run on ${now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} · Build #${Math.floor(Math.random() * 900) + 100}`;
+            renderSidebar(); renderStats(); renderTable();
+        })();
+    </script>
+</body>
+
+</html>
